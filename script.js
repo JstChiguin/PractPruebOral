@@ -2,6 +2,9 @@ const sintetizador = window.speechSynthesis;
 let botonActual = null;
 let botonSecuencia = null;
 let secuenciaActual = 0;
+let velocidadActual = configuracion.velocidad;
+let bucleActivo = false;
+let esperaAudio = null;
 
 function crearElemento(etiqueta, clase, contenido) {
   const elemento = document.createElement(etiqueta);
@@ -12,6 +15,10 @@ function crearElemento(etiqueta, clase, contenido) {
 
 function detenerAudio() {
   secuenciaActual += 1;
+  if (esperaAudio !== null) {
+    window.clearTimeout(esperaAudio);
+    esperaAudio = null;
+  }
   sintetizador.cancel();
   if (botonActual) {
     botonActual.classList.remove('playing');
@@ -28,7 +35,7 @@ function detenerAudio() {
 function crearVoz(texto, alTerminar) {
   const mensaje = new SpeechSynthesisUtterance(texto);
   mensaje.lang = configuracion.idioma;
-  mensaje.rate = configuracion.velocidad;
+  mensaje.rate = velocidadActual;
   mensaje.pitch = 1;
   if (alTerminar) {
     mensaje.onend = alTerminar;
@@ -41,15 +48,24 @@ function reproducirFrase(boton, texto) {
   const estabaActivo = botonActual === boton;
   detenerAudio();
   if (estabaActivo) return;
+  const identificador = secuenciaActual;
   botonActual = boton;
   boton.classList.add('playing');
   boton.textContent = '⏹ Detener';
-  crearVoz(texto, () => {
-    if (botonActual !== boton) return;
-    boton.classList.remove('playing');
-    boton.textContent = '▶ Escuchar';
-    botonActual = null;
-  });
+  const repetir = () => {
+    if (identificador !== secuenciaActual) return;
+    crearVoz(texto, () => {
+      if (identificador !== secuenciaActual) return;
+      if (bucleActivo) {
+        esperaAudio = window.setTimeout(repetir, configuracion.pausaEntreFrases);
+      } else {
+        boton.classList.remove('playing');
+        boton.textContent = '▶ Escuchar';
+        botonActual = null;
+      }
+    });
+  };
+  repetir();
 }
 
 function crearTarjeta(tipo, frase) {
@@ -102,12 +118,15 @@ function reproducirSecuencia(boton, seccion) {
   const siguiente = () => {
     if (identificador !== secuenciaActual) return;
     if (indice >= frases.length) {
-      detenerAudio();
-      return;
+      if (!bucleActivo) {
+        detenerAudio();
+        return;
+      }
+      indice = 0;
     }
     const frase = frases[indice++];
     crearVoz(frase, () => {
-      if (identificador === secuenciaActual) window.setTimeout(siguiente, configuracion.pausaEntreFrases);
+      if (identificador === secuenciaActual) esperaAudio = window.setTimeout(siguiente, configuracion.pausaEntreFrases);
     });
   };
   siguiente();
@@ -127,6 +146,18 @@ function prepararAplicacion() {
   document.getElementById('version').textContent = `v${configuracion.version}`;
   mostrarPreguntas();
   mostrarPredicciones();
+  const selectorVelocidad = document.getElementById('velocidad-audio');
+  selectorVelocidad.value = String(configuracion.velocidad);
+  selectorVelocidad.addEventListener('change', () => {
+    velocidadActual = Number(selectorVelocidad.value);
+    detenerAudio();
+  });
+  const botonBucle = document.getElementById('bucle-audio');
+  botonBucle.addEventListener('click', () => {
+    bucleActivo = !bucleActivo;
+    botonBucle.setAttribute('aria-pressed', String(bucleActivo));
+    botonBucle.textContent = bucleActivo ? '🔁 Bucle activado' : '🔁 Bucle desactivado';
+  });
   document.querySelectorAll('.tab').forEach(boton => boton.addEventListener('click', () => cambiarSeccion(boton.dataset.seccion)));
   document.querySelectorAll('[data-reproducir-todo]').forEach(boton => {
     boton.dataset.textoOriginal = boton.textContent;

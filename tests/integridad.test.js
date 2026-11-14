@@ -40,3 +40,16 @@ test('los archivos están vinculados y no hay código comentado', () => {
     assert.doesNotMatch(contenido, /<!--|\/\*|^\s*\/\//m);
   }
 });
+
+test('los controles de bucle y velocidad están disponibles en ambas partes', () => {
+  assert.match(html, /id="velocidad-audio"/);
+  assert.match(html, /id="bucle-audio"[^>]*aria-pressed="false"/);
+  for (const valor of ['0.5', '0.75', '0.85', '1', '1.25']) {
+    assert.ok(html.includes(`value="${valor}"`));
+  }
+  assert.match(codigo, /mensaje\.rate = velocidadActual/);
+  assert.match(codigo, /bucleActivo/);
+  assert.match(codigo, /clearTimeout\(esperaAudio\)/);
+  assert.match(codigo, /indice = 0/);
+  assert.match(estilos, /\.bucle-btn\[aria-pressed="true"\]/);
+});

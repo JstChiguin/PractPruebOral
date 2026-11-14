@@ -34,3 +34,10 @@ header p { font-size: 0.85rem; color: #9eafbd; margin-top: 6px; }
 .firma-version { font-size: 0.62rem; margin-top: 2px; }
 @media (max-width: 480px) { body { padding: 12px 12px 95px; } header { padding-top: 20px; } header h1 { font-size: 1.35rem; } .tab { flex: 1 1 150px; } .card { padding: 14px; } }
 @media (prefers-reduced-motion: no-preference) { .tab, .speak-btn, .play-all-btn { transition: opacity 0.2s, background 0.2s; } }
+
+.controles-audio { max-width: 650px; margin: 0 auto 20px; display: flex; flex-wrap: wrap; gap: 10px; align-items: end; }
+.control-velocidad { display: flex; flex: 1 1 190px; flex-direction: column; gap: 7px; color: #b9c6d2; font-size: 0.8rem; font-weight: 600; }
+.control-velocidad select { width: 100%; background: #1c2b38; color: #e8edf2; border: 1.5px solid #3d5366; border-radius: 10px; padding: 11px 12px; font: inherit; cursor: pointer; }
+.bucle-btn { flex: 1 1 190px; background: #1c2b38; color: #e8edf2; border: 1.5px solid #3d5366; border-radius: 10px; padding: 12px; font: 600 0.82rem 'Inter', Arial, sans-serif; cursor: pointer; }
+.bucle-btn[aria-pressed="true"] { border-color: #54c98c; background: #204337; color: #b8ffd5; }
+.control-velocidad select:focus-visible, .bucle-btn:focus-visible { outline: 2px solid #64d2ff; outline-offset: 3px; }

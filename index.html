@@ -19,6 +19,18 @@
     <button class="tab active" type="button" data-seccion="conversacion" aria-selected="true">Parte 1 · Preguntas y respuestas</button>
     <button class="tab" type="button" data-seccion="predicciones" aria-selected="false">Parte 2 · Mis predicciones</button>
   </nav>
+  <div class="controles-audio" role="group" aria-label="Opciones de reproducción">
+    <label class="control-velocidad" for="velocidad-audio">Velocidad
+      <select id="velocidad-audio" aria-label="Velocidad de reproducción">
+        <option value="0.5">0.5× · Muy lenta</option>
+        <option value="0.75">0.75× · Lenta</option>
+        <option value="0.85" selected>0.85× · Práctica</option>
+        <option value="1">1× · Normal</option>
+        <option value="1.25">1.25× · Rápida</option>
+      </select>
+    </label>
+    <button type="button" id="bucle-audio" class="bucle-btn" aria-pressed="false">🔁 Bucle desactivado</button>
+  </div>
   <main>
     <section class="section active" id="conversacion" aria-label="Preguntas y respuestas">
       <div class="tip"><strong>Parte 1:</strong> El profesor te indicará una de cinco preguntas al azar para hacérsela a tu compañera. Aprende a decir tanto la pregunta como la respuesta.</div>
