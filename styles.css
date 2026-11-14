@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+:root { color-scheme: dark; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', Arial, sans-serif; background: #0f1923; color: #e8edf2; min-height: 100vh; padding: 20px 20px 95px; }
+header { text-align: center; padding: 30px 20px 20px; }
+header h1 { font-size: 1.6rem; font-weight: 700; color: #64d2ff; letter-spacing: -0.5px; }
+header p { font-size: 0.85rem; color: #9eafbd; margin-top: 6px; }
+.tabs { display: flex; gap: 8px; justify-content: center; margin: 24px 0 20px; flex-wrap: wrap; }
+.tab { background: #1c2b38; border: 1.5px solid #2a3f52; color: #b3c0cc; padding: 10px 16px; border-radius: 20px; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+.tab.active { background: #64d2ff; border-color: #64d2ff; color: #0f1923; font-weight: 700; }
+.section { display: none; max-width: 650px; margin: 0 auto; }
+.section.active { display: block; }
+.section-title { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.5px; color: #64d2ff; margin: 22px 0 12px; padding-left: 4px; }
+.card { background: #1c2b38; border: 1px solid #2a3f52; border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+.card .label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+.label.pregunta { color: #ffad5c; }
+.label.respuesta { color: #70dfa0; }
+.label.prediccion { color: #b8aeff; }
+.phrase-en { font-size: 1rem; font-weight: 600; color: #e8edf2; margin-bottom: 8px; line-height: 1.5; }
+.phrase-pron { font-size: 0.84rem; color: #64d2ff; font-style: italic; margin-bottom: 8px; line-height: 1.5; }
+.phrase-es { font-size: 0.83rem; color: #b9c6d2; margin-bottom: 12px; line-height: 1.5; }
+.speak-btn { display: inline-flex; align-items: center; gap: 6px; background: #0f1923; border: 1.5px solid #3d5366; color: #e8edf2; padding: 8px 14px; border-radius: 20px; font-size: 0.78rem; cursor: pointer; font-family: inherit; }
+.speak-btn:hover { border-color: #64d2ff; color: #64d2ff; }
+.speak-btn.playing { border-color: #54c98c; color: #54c98c; }
+.acciones { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+.play-all-btn, .random-btn { flex: 1 1 200px; background: #64d2ff; color: #0f1923; border: none; padding: 13px; border-radius: 12px; font-size: 0.86rem; font-weight: 700; cursor: pointer; font-family: inherit; }
+.random-btn { background: #2d4559; color: #edf6fd; }
+.play-all-btn.playing { background: #54c98c; }
+.tip { background: #1c2b38; border-left: 3px solid #64d2ff; border-radius: 8px; padding: 12px 14px; font-size: 0.85rem; color: #b3c0cc; margin-bottom: 16px; line-height: 1.6; }
+.tip strong { color: #e8edf2; }
+.divider { height: 1px; background: #2a3f52; margin: 22px 0; }
+.watermark { position: fixed; bottom: 10px; right: 14px; display: flex; flex-direction: column; align-items: center; color: rgba(185, 203, 219, 0.74); background: rgba(15, 25, 35, 0.75); border-radius: 8px; padding: 4px 8px; z-index: 10; pointer-events: none; }
+.firma-texto { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.4px; white-space: nowrap; }
+.firma-version { font-size: 0.62rem; margin-top: 2px; }
+@media (max-width: 480px) { body { padding: 12px 12px 95px; } header { padding-top: 20px; } header h1 { font-size: 1.35rem; } .tab { flex: 1 1 150px; } .card { padding: 14px; } }
+@media (prefers-reduced-motion: no-preference) { .tab, .speak-btn, .play-all-btn { transition: opacity 0.2s, background 0.2s; } }
+
+.controles-audio { max-width: 650px; margin: 0 auto 20px; display: flex; flex-wrap: wrap; gap: 10px; align-items: end; }
+.control-velocidad { display: flex; flex: 1 1 190px; flex-direction: column; gap: 7px; color: #b9c6d2; font-size: 0.8rem; font-weight: 600; }
+.control-velocidad select { width: 100%; background: #1c2b38; color: #e8edf2; border: 1.5px solid #3d5366; border-radius: 10px; padding: 11px 12px; font: inherit; cursor: pointer; }
+.bucle-btn { flex: 1 1 190px; background: #1c2b38; color: #e8edf2; border: 1.5px solid #3d5366; border-radius: 10px; padding: 12px; font: 600 0.82rem 'Inter', Arial, sans-serif; cursor: pointer; }
+.bucle-btn[aria-pressed="true"] { border-color: #54c98c; background: #204337; color: #b8ffd5; }
+.control-velocidad select:focus-visible, .bucle-btn:focus-visible { outline: 2px solid #64d2ff; outline-offset: 3px; }
