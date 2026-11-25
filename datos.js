@@ -1,23 +1,22 @@
 const preguntasOrales = [
   {
-    tema: 'Have you ever...?',
-    pregunta: { ingles: 'Have you ever traveled to another country?', pronunciacion: 'Jav iu éver tráveld tu anáder cántri?', traduccion: '¿Alguna vez has viajado a otro país?' },
-    respuesta: { ingles: 'Yes, I have. I went to Europe.', pronunciacion: 'Ies, ai jav. Ai uent tu Iúrop.', traduccion: 'Sí, he viajado. Fui a Europa.' }
+    tema: "Ask your partner about his/her general plans for the future", traduccion: "Pregúntale a tu compañera sobre sus planes generales para el futuro",
+    pregunta: { ingles: 'What are your plans for the next five years?', pronunciacion: 'Uát ar yor plans for de nekst fáiv yírs?', traduccion: '¿Cuáles son tus planes para los próximos cinco años?' }
   },
   {
-    tema: "What's the best...?",
-    pregunta: { ingles: "What's the best movie you've ever seen?", pronunciacion: 'Uats de best múvi iuv éver sín?', traduccion: '¿Cuál es la mejor película que has visto?' },
-    respuesta: { ingles: "The best movie I've ever seen is Speed.", pronunciacion: 'De best múvi aiv éver sín is Spíd.', traduccion: 'La mejor película que he visto es Máxima Velocidad.' }
+    pregunta: "Pregunta de Vicky",  "Ask your partner about what he/she wasdoing at a certain time in the past", traduccion:  "Pregúntale a tu compañero/a qué estaba haciendo en un momento determinado del pasado."
+    ingles: "What were you doing yesterday at 8 p.m.?", pronunciacion: 'Uats de best múvi iuv éver sín?', traduccion: '¿Cuál es la mejor película que has visto?' }
   },
   {
-    tema: "What's the worst...?",
-    pregunta: { ingles: "What's the worst movie you've ever seen?", pronunciacion: 'Uats de uérst múvi iuv éver sín?', traduccion: '¿Cuál es la peor película que has visto?' },
-    respuesta: { ingles: "The worst movie I've ever seen is Cats.", pronunciacion: 'De uérst múvi aiv éver sín is Kats.', traduccion: 'La peor película que he visto es Cats.' }
+    respuesta: "Responder",
+    ingles: "I was studying English at home.", pronunciacion: 'Ai uoz stádi-ing Ínglish at jóum.', traduccion: 'Estaba estudiando inglés en casa.' }
+  },
+  {
+    ingles: "I was practicing for my oral exam because I want to get a good grade.", pronunciacion: 'Ai uoz práctising for mai óral igzám bikóz ai uánt tu guet a gud gré id.', traduccion: 'Estaba practicando para mi examen oral porque quiero obtener una buena nota.' }
   },
   {
     tema: "What's the most...?",
-    pregunta: { ingles: "What's the most beautiful place you've ever visited?", pronunciacion: 'Uats de móust biútiful pléis iuv éver vísitid?', traduccion: '¿Cuál es el lugar más bonito que has visitado?' },
-    respuesta: { ingles: "The most beautiful place I've ever visited is Venice.", pronunciacion: 'De móust biútiful pléis aiv éver vísitid is Vénis.', traduccion: 'El lugar más bonito que he visitado es Venecia.' }
+    respuesta: { ingles: "After that, I watched TV with my family.", pronunciacion: 'Áfter dat, ai uótcht tí-vi uith mai fámili.', traduccion: 'Después de eso, vi televisión con mi familia.' }
   },
   {
     tema: 'Have you ... yet?',
@@ -27,7 +26,7 @@ const preguntasOrales = [
 ];
 
 const prediccionesOrales = {
-  pregunta: { ingles: 'Make two predictions about yourself in the next 5 years.', pronunciacion: 'Méik tú pridíkshons abáut iorsélf in de nékst fáiv yírs.', traduccion: 'Haz dos predicciones sobre ti para los próximos cinco años.' },
+  pregunta: { ingles: 'What are your professional and personal plans for the next five years?.', pronunciacion: 'Uát ar yor proféshonal and pérsonal plans for de nekst fáiv yírs?.', traduccion: '¿Cuáles son tus planes profesionales y personales para los próximos cinco años?.' },
   respuestas: [
     { ingles: 'In five years, I will finish my studies and I will work in IT.', pronunciacion: 'In fáiv yírs, ai uil fínish mai stádis and ai uil uérk in ai tí.', traduccion: 'En cinco años, terminaré mis estudios y trabajaré en informática.' },
     { ingles: 'I want to be a software developer because I really like technology.', pronunciacion: 'Ai uánt tu bí a sóftuer divéloper bikóz ai ríali láik teknóloyi.', traduccion: 'Quiero ser desarrolladora de software porque realmente me gusta la tecnología.' },
