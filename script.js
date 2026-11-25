@@ -5,6 +5,7 @@ let secuenciaActual = 0;
 let velocidadActual = configuracion.velocidad;
 let bucleActivo = false;
 let esperaAudio = null;
+const preguntasEnBucle = preguntasOrales.map(() => true);
 
 function crearElemento(etiqueta, clase, contenido) {
   const elemento = document.createElement(etiqueta);
@@ -44,7 +45,7 @@ function crearVoz(texto, alTerminar) {
   sintetizador.speak(mensaje);
 }
 
-function reproducirFrase(boton, texto) {
+function reproducirFrase(boton, texto, indicePregunta = null) {
   const estabaActivo = botonActual === boton;
   detenerAudio();
   if (estabaActivo) return;
@@ -52,34 +53,61 @@ function reproducirFrase(boton, texto) {
   botonActual = boton;
   boton.classList.add('playing');
   boton.textContent = '⏹ Detener';
+  let reproducciones = 0;
+  const finalizar = () => {
+    boton.classList.remove('playing');
+    boton.textContent = '▶ Escuchar';
+    botonActual = null;
+  };
+  const debeRepetir = () => bucleActivo && (indicePregunta === null || preguntasEnBucle[indicePregunta]);
   const repetir = () => {
     if (identificador !== secuenciaActual) return;
+    if (reproducciones > 0 && !debeRepetir()) {
+      finalizar();
+      return;
+    }
+    reproducciones += 1;
     crearVoz(texto, () => {
       if (identificador !== secuenciaActual) return;
-      if (bucleActivo) {
+      if (debeRepetir()) {
         esperaAudio = window.setTimeout(repetir, configuracion.pausaEntreFrases);
       } else {
-        boton.classList.remove('playing');
-        boton.textContent = '▶ Escuchar';
-        botonActual = null;
+        finalizar();
       }
     });
   };
   repetir();
 }
 
-function crearTarjeta(tipo, frase) {
+function crearTarjeta(tipo, frase, indicePregunta = null, etiquetaPersonalizada = null) {
   const tarjeta = crearElemento('article', 'card');
   tarjeta.dataset.text = frase.ingles;
-  tarjeta.append(crearElemento('div', `label ${tipo}`, tipo === 'pregunta' ? 'Pregunta' : tipo === 'respuesta' ? 'Respuesta' : 'Mi respuesta'));
+  tarjeta.append(crearElemento('div', `label ${tipo}`, etiquetaPersonalizada || (tipo === 'pregunta' ? 'Pregunta' : tipo === 'respuesta' ? 'Respuesta' : 'Mi respuesta')));
   tarjeta.append(crearElemento('p', 'phrase-en', frase.ingles));
   tarjeta.append(crearElemento('p', 'phrase-pron', `🔊 ${frase.pronunciacion}`));
   tarjeta.append(crearElemento('p', 'phrase-es', frase.traduccion));
   const boton = crearElemento('button', 'speak-btn', '▶ Escuchar');
   boton.type = 'button';
-  boton.addEventListener('click', () => reproducirFrase(boton, frase.ingles));
+  boton.addEventListener('click', () => reproducirFrase(boton, frase.ingles, indicePregunta));
   tarjeta.append(boton);
   return tarjeta;
+}
+
+function mostrarAvisoBucle(mensaje = '') {
+  const aviso = document.getElementById('aviso-bucle');
+  aviso.textContent = mensaje;
+  aviso.hidden = !mensaje;
+}
+
+function actualizarInterruptorBucle(boton, grupo, indicePregunta) {
+  const incluido = preguntasEnBucle[indicePregunta];
+  boton.setAttribute('aria-checked', String(incluido));
+  boton.textContent = incluido ? 'Bucle: ON' : 'Bucle: OFF';
+  grupo.classList.toggle('sin-bucle', !incluido);
+}
+
+function obtenerRespuestasEjercicio(ejercicio) {
+  return ejercicio.respuestas || (ejercicio.respuesta ? [ejercicio.respuesta] : []);
 }
 
 function mostrarPreguntas() {
@@ -87,9 +115,27 @@ function mostrarPreguntas() {
   preguntasOrales.forEach((ejercicio, indice) => {
     const grupo = crearElemento('div', 'grupo-pregunta');
     grupo.id = `pregunta-${indice + 1}`;
-    grupo.append(crearElemento('h2', 'section-title', `${indice + 1}. ${ejercicio.tema}`));
-    grupo.append(crearTarjeta('pregunta', ejercicio.pregunta));
-    grupo.append(crearTarjeta('respuesta', ejercicio.respuesta));
+    const encabezado = crearElemento('div', 'encabezado-pregunta');
+    const titulo = crearElemento('h2', 'section-title', `${indice + 1}. ${ejercicio.tema}`);
+    const interruptor = crearElemento('button', 'interruptor-bucle');
+    interruptor.type = 'button';
+    interruptor.setAttribute('role', 'switch');
+    interruptor.setAttribute('aria-label', `Incluir pregunta ${indice + 1} y su respuesta en el bucle`);
+    interruptor.addEventListener('click', () => {
+      preguntasEnBucle[indice] = !preguntasEnBucle[indice];
+      actualizarInterruptorBucle(interruptor, grupo, indice);
+      mostrarAvisoBucle();
+    });
+    actualizarInterruptorBucle(interruptor, grupo, indice);
+    encabezado.append(titulo, interruptor);
+    grupo.append(encabezado);
+    if (ejercicio.instruccion) grupo.append(crearElemento('p', 'instruccion-pregunta', ejercicio.instruccion));
+    if (ejercicio.traduccionInstruccion) grupo.append(crearElemento('p', 'traduccion-instruccion', ejercicio.traduccionInstruccion));
+    grupo.append(crearTarjeta('pregunta', ejercicio.pregunta, indice, ejercicio.etiquetaPregunta));
+    obtenerRespuestasEjercicio(ejercicio).forEach((respuesta, indiceRespuesta) => {
+      const etiqueta = ejercicio.respuestas && ejercicio.respuestas.length > 1 ? `Mi respuesta · parte ${indiceRespuesta + 1}` : 'Respuesta';
+      grupo.append(crearTarjeta('respuesta', respuesta, indice, etiqueta));
+    });
     if (indice !== preguntasOrales.length - 1) grupo.append(crearElemento('div', 'divider'));
     contenedor.append(grupo);
   });
@@ -107,9 +153,13 @@ function reproducirSecuencia(boton, seccion) {
   const estabaActivo = botonSecuencia === boton;
   detenerAudio();
   if (estabaActivo) return;
+  mostrarAvisoBucle();
   const frases = seccion === 'conversacion'
-    ? preguntasOrales.flatMap(ejercicio => [ejercicio.pregunta.ingles, ejercicio.respuesta.ingles])
-    : prediccionesOrales.respuestas.map(frase => frase.ingles);
+    ? preguntasOrales.flatMap((ejercicio, indicePregunta) => [
+        { texto: ejercicio.pregunta.ingles, indicePregunta },
+        ...obtenerRespuestasEjercicio(ejercicio).map(respuesta => ({ texto: respuesta.ingles, indicePregunta }))
+      ])
+    : prediccionesOrales.respuestas.map(frase => ({ texto: frase.ingles, indicePregunta: null }));
   const identificador = secuenciaActual;
   botonSecuencia = boton;
   boton.classList.add('playing');
@@ -117,15 +167,27 @@ function reproducirSecuencia(boton, seccion) {
   let indice = 0;
   const siguiente = () => {
     if (identificador !== secuenciaActual) return;
-    if (indice >= frases.length) {
+    let indiceSiguiente = indice;
+    if (seccion === 'conversacion' && bucleActivo) {
+      while (indiceSiguiente < frases.length && !preguntasEnBucle[frases[indiceSiguiente].indicePregunta]) indiceSiguiente += 1;
+    }
+    if (indiceSiguiente >= frases.length) {
       if (!bucleActivo) {
         detenerAudio();
         return;
       }
-      indice = 0;
+      indiceSiguiente = 0;
+      if (seccion === 'conversacion') {
+        while (indiceSiguiente < frases.length && !preguntasEnBucle[frases[indiceSiguiente].indicePregunta]) indiceSiguiente += 1;
+      }
     }
-    const frase = frases[indice++];
-    crearVoz(frase, () => {
+    if (indiceSiguiente >= frases.length) {
+      detenerAudio();
+      mostrarAvisoBucle('Activa al menos una pregunta para reproducir el bucle.');
+      return;
+    }
+    indice = indiceSiguiente + 1;
+    crearVoz(frases[indiceSiguiente].texto, () => {
       if (identificador === secuenciaActual) esperaAudio = window.setTimeout(siguiente, configuracion.pausaEntreFrases);
     });
   };
@@ -157,6 +219,7 @@ function prepararAplicacion() {
     bucleActivo = !bucleActivo;
     botonBucle.setAttribute('aria-pressed', String(bucleActivo));
     botonBucle.textContent = bucleActivo ? '🔁 Bucle activado' : '🔁 Bucle desactivado';
+    mostrarAvisoBucle();
   });
   document.querySelectorAll('.tab').forEach(boton => boton.addEventListener('click', () => cambiarSeccion(boton.dataset.seccion)));
   document.querySelectorAll('[data-reproducir-todo]').forEach(boton => {

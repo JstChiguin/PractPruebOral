@@ -4,10 +4,11 @@ Aplicación web gratuita, sin servidor ni cuentas, para practicar la evaluación
 
 ## Contenidos
 
-- Parte 1: cinco preguntas y respuestas para practicar con una compañera.
-- Parte 2: respuesta extendida sobre dos predicciones para los próximos cinco años.
+- Parte 1: tres ejercicios: pregunta sobre planes futuros para Vicke, pregunta de Vicke sobre el pasado con tu respuesta de tres frases, y una pregunta adicional con Present Perfect.
+- Parte 2: pregunta del profesor sobre los planes profesionales y personales de los próximos cinco años, con cuatro frases de respuesta.
 - Texto en inglés, aproximación de pronunciación en español y traducción.
 - Reproducción por frase, reproducción continua, bucle, velocidades ajustables y selección aleatoria de preguntas.
+- Interruptores ON/OFF independientes en cada pregunta de la Parte 1 para seleccionar qué ejercicio y sus frases se repiten.
 - Firma «by Chiguin» y versión desde una configuración central.
 
 ## Archivos
@@ -41,4 +42,6 @@ No requiere datos personales, claves ni servicios de pago. Las preguntas y respu
 
 - **Velocidad:** permite elegir 0.5×, 0.75×, 0.85×, 1× o 1.25×. Al modificarla se detiene la reproducción actual; inicia el audio nuevamente para aplicar la nueva velocidad.
 - **Bucle:** repite automáticamente una frase o la secuencia completa mientras esté activado. Presiona **Detener** para finalizar.
+- **Parte 1, ON/OFF:** cada interruptor incluye u omite del bucle la pregunta y las respuestas disponibles. Al activar el bucle, **Escuchar todo seguido** solo recorre los ejercicios en ON. Con el bucle desactivado, reproduce los tres ejercicios una sola vez. El botón individual **Escuchar** siempre permite oír la frase; si su ejercicio está en OFF, no se repite en bucle. Los cambios ON/OFF se aplican durante la reproducción desde la frase siguiente. La pregunta para Vicke no incluye respuesta inventada; la pregunta sobre el pasado tiene tres respuestas separadas para facilitar su práctica.
+- Si todas las preguntas están en OFF y se intenta reproducir en bucle, aparece un aviso sin bloquear la interfaz.
 - El bucle y la velocidad funcionan en ambas partes de la práctica.

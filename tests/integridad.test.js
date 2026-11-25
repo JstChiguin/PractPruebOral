@@ -2,6 +2,7 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const vm = require('node:vm');
 const directorio = path.join(__dirname, '..');
 const html = fs.readFileSync(path.join(directorio, 'index.html'), 'utf8');
 const estilos = fs.readFileSync(path.join(directorio, 'styles.css'), 'utf8');
@@ -24,14 +25,28 @@ test('la firma permanece visible y fija abajo a la derecha', () => {
 });
 
 test('la versión procede de configuración centralizada', () => {
-  assert.match(configuracion, /version:\s*'1\.0\.0'/);
+  const version = JSON.parse(fs.readFileSync(path.join(directorio, 'package.json'), 'utf8')).version;
+  assert.ok(configuracion.includes(`version: '${version}'`));
   assert.match(html, /id="version"/);
   assert.match(codigo, /configuracion\.version/);
 });
 
-test('hay cinco preguntas y cuatro frases en la respuesta larga', () => {
-  assert.equal((datos.match(/tema:/g) || []).length, 5);
-  assert.equal((datos.match(/ingles:/g) || []).length, 15);
+test('los ejercicios del examen están completos y con estructura válida', () => {
+  const contenido = vm.runInNewContext(`${datos}\n({ preguntasOrales, prediccionesOrales })`);
+  assert.equal(contenido.preguntasOrales.length, 3);
+  assert.equal(contenido.preguntasOrales[0].pregunta.ingles, 'What are your plans for the next five years?');
+  assert.equal(contenido.preguntasOrales[0].respuesta, undefined);
+  assert.equal(contenido.preguntasOrales[1].pregunta.ingles, 'What were you doing yesterday at 8 p.m.?');
+  assert.equal(contenido.preguntasOrales[1].respuestas.length, 3);
+  assert.equal(contenido.preguntasOrales[2].respuesta.ingles, 'Yes, I have already eaten.');
+  assert.equal(contenido.prediccionesOrales.respuestas.length, 4);
+  for (const ejercicio of contenido.preguntasOrales) {
+    assert.ok(ejercicio.tema);
+    assert.ok(ejercicio.pregunta.ingles && ejercicio.pregunta.pronunciacion && ejercicio.pregunta.traduccion);
+    for (const respuesta of ejercicio.respuestas || (ejercicio.respuesta ? [ejercicio.respuesta] : [])) {
+      assert.ok(respuesta.ingles && respuesta.pronunciacion && respuesta.traduccion);
+    }
+  }
 });
 
 test('los archivos están vinculados y no hay código comentado', () => {
